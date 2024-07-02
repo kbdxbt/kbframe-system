@@ -1,19 +1,21 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\System\Http\Controllers\TaskController;
 
-/*
-    |--------------------------------------------------------------------------
-    | API Routes
-    |--------------------------------------------------------------------------
-    |
-    | Here is where you can register API routes for your application. These
-    | routes are loaded by the RouteServiceProvider within a group which
-    | is assigned the "api" middleware group. Enjoy building your API!
-    |
-*/
+Route::prefix('v1')->middleware(['api'])->group(function () {
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('system', fn (Request $request) => $request->user())->name('system');
+    Route::group(['prefix' => 'system'], function () {
+        // 任务模块
+        Route::prefix('task')
+            ->controller(TaskController::class)
+            ->name('task.')
+            ->middleware(['auth:member'])->group(function () {
+                Route::get('export', 'export')->name('export');
+                Route::post('import', 'import')->name('import');
+                Route::get('import_template', 'importTemplate')->name('import_template');
+                Route::get('download_file', 'downloadFile')->name('download_file');
+            });
+    });
+
 });

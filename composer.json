@@ -17,15 +17,15 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\System\\": "",
-            "Modules\\System\\App\\": "app/",
-            "Modules\\System\\Database\\Factories\\": "database/factories/",
-            "Modules\\System\\Database\\Seeders\\": "database/seeders/"
-        }
+            "Modules\\System\\": ""
+        },
+        "files": [
+            "helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Modules\\System\\Tests\\": "tests/"
+            "Modules\\System\\Tests\\": "Tests/"
         }
     }
 }

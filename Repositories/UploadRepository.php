@@ -3,13 +3,12 @@
 namespace Modules\System\Repositories;
 
 use Modules\Core\Repositories\BaseRepository;
-use Modules\System\Models\TableTask;
+use Modules\System\Models\Upload;
 
-class TableTaskRepository extends BaseRepository
+class UploadRepository extends BaseRepository
 {
-
     public function model(): string
     {
-        return TableTask::class;
+        return Upload::class;
     }
 }

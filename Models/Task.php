@@ -3,13 +3,10 @@
 namespace Modules\System\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Modules\Core\Models\BaseModel;
 
-class TableTask extends BaseModel
+class Task extends BaseModel
 {
     use SoftDeletes;
-
-    protected $table = 'table_tasks';
 
     protected $guarded = [];
 

@@ -4,18 +4,16 @@ namespace Modules\System\Enums;
 
 use Modules\Core\Support\Traits\EnumConcern;
 
-enum TableTaskSourceEnum: int
+enum QueueEnum: string
 {
     use EnumConcern;
 
-    case EXPORT = 1;
-    case IMPORT = 2;
+    case TABLE_TASK_JOB = 'table_task_job';
 
     public function map(): string
     {
         return match ($this) {
-            self::EXPORT => '导出',
-            self::IMPORT => '导入',
+            self::TABLE_TASK_JOB => '数据表任务',
         };
     }
 }

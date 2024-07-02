@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\System\Enums;
+namespace Modules\System\Enums\Task;
 
 use Modules\Core\Support\Traits\EnumConcern;
 
-enum TableTaskStatusEnum: int
+enum StatusEnum: int
 {
     use EnumConcern;
 
