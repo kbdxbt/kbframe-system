@@ -126,15 +126,19 @@ class TaskService extends BaseService
 
     public function dealExportTask($task, $callback): void
     {
-        list($filePath, $realPath) = $this->generateFormatFileName($task['source'], $task['type']);
+        $params = $task['ext']['request_params'] ?? [];
+        $suffix = $params['suffix'] ?? 'xlsx';
+        list($filePath, $realPath) = $this->generateFormatFileName($task['source'], 'export', $suffix);
 
-        $requestParams = $task['ext']['request_params'] ?? [];
         $exportData = [];
         $total = $num = 0;
         $currentTime = Carbon::now();
 
+        set_time_limit(0);
+        ini_set('memory_limit', '2048M');
+
         while (true) {
-            if (Carbon::now()->diffInSeconds($currentTime) > 1800 || $requestParams['page'] > 10000) {
+            if (Carbon::now()->diffInSeconds($currentTime) > 1800 || $params['page'] > 10000) {
                 $this->repository->update([
                     'row_num' => $total,
                     'fail_reason' => '系统执行超时或超过执行分页限制，请联系技术人员',
@@ -143,7 +147,7 @@ class TaskService extends BaseService
                 break;
             }
 
-            $result = call_user_func($callback, $requestParams);
+            $result = call_user_func($callback, $params);
             $total = $total ? : $result['total'] ?? 0;
 
             if ($total === 0) {
@@ -160,15 +164,21 @@ class TaskService extends BaseService
                 ], $task['id']);
             }
 
-            if (! empty($result['data'])) {
-                $num += count($exportData);
-                $exportData = array_merge($exportData, $result['data']);
+            if (! empty($list = $result['data'])) {
+                $num += count($list);
+//                if ($suffix == 'csv') {
+//                    export_csv($result['data'], $realPath);
+//                    continue;
+//                }
+                $exportData = array_merge($exportData, $list);
             } else {
-                fastexcel($exportData)->export($realPath);
+                dd($exportData);
+                $suffix == 'xlsx' && fastexcel($exportData)->export($realPath);
                 break;
             }
 
-            $requestParams['page']++;
+            $params['page']++;
+            !empty($result['next_cursor']) && $params['cursor'] = $result['next_cursor'];
         }
 
         if ($total) {
@@ -241,7 +251,7 @@ class TaskService extends BaseService
 
         $filename = SourceEnum::fromValue($source);
         if ($path == 'import_fail') {
-            $filename .= '_失败';
+            $filename .= '_错误提示';
         }
 
         $filePath = Upload::generateFormatFileName(
