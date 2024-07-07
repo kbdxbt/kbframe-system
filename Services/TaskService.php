@@ -5,8 +5,10 @@ namespace Modules\System\Services;
 use Carbon\Carbon;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Modules\Core\Exceptions\BadRequestException;
 use Modules\Core\Services\BaseService;
 use Modules\Core\Support\Upload;
@@ -54,7 +56,7 @@ class TaskService extends BaseService
     {
         $scheduledAt = $params['scheduled_at'] ?? null;
 
-        $uploadRes = (new Upload($this->filesystem->getConfig()['driver']))
+        $uploadRes = (new Upload($this->filesystem))
             ->upload($file, sprintf('import/%s', $params['source']));
 
         $this->repository->create([
@@ -128,6 +130,7 @@ class TaskService extends BaseService
     {
         $params = $task['ext']['request_params'] ?? [];
         $suffix = $params['suffix'] ?? 'xlsx';
+        $mode = $params['mode'] ?? 'c';
         list($filePath, $realPath) = $this->generateFormatFileName($task['source'], 'export', $suffix);
 
         $exportData = [];
@@ -166,14 +169,21 @@ class TaskService extends BaseService
 
             if (! empty($list = $result['data'])) {
                 $num += count($list);
-//                if ($suffix == 'csv') {
-//                    export_csv($result['data'], $realPath);
-//                    continue;
-//                }
-                $exportData = array_merge($exportData, $list);
-            } else {
-                dd($exportData);
-                $suffix == 'xlsx' && fastexcel($exportData)->export($realPath);
+                if ($suffix == 'csv' && $mode == 'a') {
+                    if (File::exists($realPath)) {
+                        export_csv($list, $realPath);
+                    } else {
+                        fastexcel($list)->export($realPath);
+                    }
+                } else {
+                    $exportData = array_merge($exportData, $list);
+                }
+            }
+
+            if (empty($result['data']) || Arr::existEmpty($result, 'next_cursor')) {
+                if ($mode != 'a') {
+                    fastexcel($exportData)->export($realPath);
+                }
                 break;
             }
 
@@ -214,16 +224,12 @@ class TaskService extends BaseService
         $data = fastexcel()->import($this->filesystem->path($uploadFileModel['storage_path']));
 
         $total = $data->count();
-        $fail_data = [];
-        $data->chunk(500)->each(function ($list) use ($total, $task, $callback, &$fail_data) {
+        $failData = [];
+        $data->chunk(500)->each(function ($list) use ($total, $task, $callback, &$failData) {
             $num = 0;
 
-            foreach ($list as $v) {
-                $result = call_user_func($callback, $v);
-                if ($result && $result['status'] == 0) {
-                    $fail_data[] = $result;
-                }
-            }
+            $result = call_user_func($callback, $list);
+            if ($result) $failData = array_merge($failData, $result);
 
             $num += $list->count();
             $this->repository->update([
@@ -234,10 +240,10 @@ class TaskService extends BaseService
         });
 
         list($filePath, $realPath) = $this->generateFormatFileName($task['source'], 'import_fail');
-        fastexcel($fail_data)->export($realPath);
+        fastexcel($failData)->export($realPath);
 
         $this->repository->update([
-            'ext->fail_rows' => count($fail_data),
+            'ext->fail_rows' => count($failData),
             'ext->fail_file_path' => $realPath,
             'progress' => 100,
             'completed_at' => Carbon::now(),
@@ -251,7 +257,7 @@ class TaskService extends BaseService
 
         $filename = SourceEnum::fromValue($source);
         if ($path == 'import_fail') {
-            $filename .= '_错误提示';
+            $filename = '错误提示';
         }
 
         $filePath = Upload::generateFormatFileName(
