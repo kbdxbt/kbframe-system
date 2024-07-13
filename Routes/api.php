@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\System\Http\Controllers\NoticeController;
 use Modules\System\Http\Controllers\TaskController;
 use Modules\System\Http\Controllers\UploadController;
 
@@ -26,6 +27,17 @@ Route::prefix('v1')->middleware(['api'])->group(function () {
                 Route::post('import', 'import')->name('import');
                 Route::get('import_template', 'importTemplate')->name('import_template');
                 Route::get('download_file', 'downloadFile')->name('download_file');
+            });
+
+        // 公告模块
+        Route::prefix('notice')
+            ->controller(NoticeController::class)
+            ->name('notice.')
+            ->middleware(['auth:member'])->group(function () {
+                Route::get('list', 'list')->name('list');
+                Route::post('save', 'save')->name('save');
+                Route::get('detail', 'detail')->name('detail');
+                Route::post('delete', 'delete')->name('delete');
             });
     });
 

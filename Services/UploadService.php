@@ -5,7 +5,7 @@ namespace Modules\System\Services;
 use Modules\Core\Services\BaseService;
 use Modules\System\Repositories\UploadRepository;
 
-class UploadFileService extends BaseService
+class UploadService extends BaseService
 {
     protected UploadRepository $repository;
 
