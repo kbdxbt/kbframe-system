@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Core\Exceptions\BadRequestException;
 use Modules\Core\Services\BaseService;
+use Modules\Core\Support\Traits\ActionServiceTrait;
 use Modules\Core\Support\Upload;
 use Modules\System\Enums\QueueEnum;
 use Modules\System\Enums\StorageModeEnum;
@@ -24,7 +25,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TaskService extends BaseService
 {
-    protected TaskRepository $repository;
+    use ActionServiceTrait;
+
+    protected $repository;
 
     protected UploadRepository $uploadFileRepository;
 
@@ -85,16 +88,6 @@ class TaskService extends BaseService
         }
     }
 
-    public function getTask($id): array
-    {
-        $data = $this->repository->query()->find($id)?->toArray();
-        if (!$data) {
-            throw new BadRequestException('获取数据失败');
-        }
-
-        return $data;
-    }
-
     public function addTaskQueue($params, $scheduledAt = ''): void
     {
         dispatch((new TaskJob($params))->onQueue(QueueEnum::TABLE_TASK_JOB->value))->delay($scheduledAt);
@@ -104,7 +97,7 @@ class TaskService extends BaseService
     {
         $taskId = $params['task_id'] ?? '';
 
-        $task = $this->getTask($taskId);
+        $task = $this->getDetail($taskId);
 
         try {
             $callback = SourceEnum::fromValue($task['source'], 'callback');
@@ -276,7 +269,7 @@ class TaskService extends BaseService
 
     public function downloadFile($params): string
     {
-        $task = $this->getTask($params['task_id']);
+        $task = $this->getDetail($params['task_id']);
 
         if ($task['status'] != StatusEnum::SUCCESS->value || empty($task['file_path']) || $task['member_id'] != request()->userId()) {
             throw new BadRequestException('获取任务下载文件失败');

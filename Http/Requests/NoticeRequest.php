@@ -42,10 +42,10 @@ class NoticeRequest extends BaseRequest
     public function messages(): array
     {
         return [
-            'category.required' => '请选择类别',
-            'title.required' => '请填写标题',
+            'category.required' => '请选择公告类别',
+            'title.required' => '请填写公告标题',
             'title.max' => '标题最多输入255个字符',
-            'content.required' => '请填写内容',
+            'content.required' => '请填写公告内容',
             'id.required' => '请选择操作项',
             'ids.required' => '请选择操作项',
             'ids.explode' => '选择参数格式有误'

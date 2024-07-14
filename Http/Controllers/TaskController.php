@@ -9,34 +9,38 @@ use Modules\System\Services\TaskService;
 
 class TaskController extends BaseController
 {
-    protected TaskService $service;
-
-    public function __construct(TaskService $service)
+    public function __construct(TaskRequest $request, TaskService $service)
     {
+        $this->request = $request;
         $this->service = $service;
     }
 
-    public function export(TaskRequest $request)
+    public function export()
     {
-        $this->service->createExportTask($request->validateInput());
+        $this->service->createExportTask($this->request->validateInput());
 
         return $this->ok();
     }
 
-    public function import(TaskRequest $request)
+    public function import()
     {
-        $this->service->createImportTask($request->file('file'), $request->validateInput());
+        $this->service->createImportTask(
+            $this->request->file('file'),
+            $this->request->validateInput()
+        );
 
         return $this->ok();
     }
 
-    public function importTemplate(TaskRequest $request)
+    public function importTemplate()
     {
-        return $this->service->importTemplate($request->validateInput());
+        return $this->service->importTemplate($this->request->validateInput());
     }
 
-    public function downloadFile(TaskRequest $request)
+    public function downloadFile()
     {
-        return $this->success(['url' => $this->service->downloadFile($request->validateInput())]);
+        return $this->success(['url' => $this->service->downloadFile(
+            $this->request->validateInput()
+        )]);
     }
 }

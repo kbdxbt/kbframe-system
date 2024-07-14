@@ -8,34 +8,9 @@ use Modules\System\Services\NoticeService;
 
 class NoticeController extends BaseController
 {
-    protected NoticeService $service;
-
-    public function __construct(NoticeService $service)
+    public function __construct(NoticeRequest $request, NoticeService $service)
     {
+        $this->request = $request;
         $this->service = $service;
-    }
-
-    public function list(NoticeRequest $request)
-    {
-        return $this->success($this->service->getList($request->validateInput()));
-    }
-
-    public function save(NoticeRequest $request)
-    {
-        $this->service->saveData($request->validateInput());
-
-        return $this->ok();
-    }
-
-    public function detail(NoticeRequest $request)
-    {
-        return $this->success($this->service->getDetail($request->id));
-    }
-
-    public function delete(NoticeRequest $request)
-    {
-        $this->service->deleteData($request->validateInput());
-
-        return $this->ok();
     }
 }
