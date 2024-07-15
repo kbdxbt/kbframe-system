@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('fail_reason', 500)->default('')->comment('失败原因');
             $table->string('error_reason', 2000)->default('')->comment('错误原因');
             $table->tinyInteger('status')->default(0)->comment('状态 [0:待处理; 1:执行中; 2:执行成功; 3:执行失败; 4:已取消]');
-            $table->integer('create_user_id')->default(0)->comment('创建用户ID');
+            $table->integer('created_by')->default(0)->comment('创建用户ID');
             $table->json('ext')->nullable()->comment('附加信息');
             $table->timestamp('completed_at')->nullable()->comment('完成时间');
             $table->timestamp('scheduled_at')->nullable()->comment('预约时间');
