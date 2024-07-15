@@ -20,13 +20,10 @@ class NoticeService extends BaseService
 
     public function saveData($params): void
     {
-        $params['created_by'] = $params['created_by'] ?? request()->userId();
-
         $this->repository->updateOrInsert([
             'id' => $params['id'] ?? 0
         ], Arr::only($params, [
-            'category', 'tags', 'title', 'content', 'sort', 'start_date', 'end_date',
-            'created_by', 'updated_by'
+            'category', 'tags', 'title', 'content', 'sort', 'start_date', 'end_date'
         ]));
     }
 }

@@ -8,8 +8,6 @@ class Notice extends BaseModel
 {
     use SoftDeletes;
 
-    protected $guarded = [];
-
     protected $casts = [
         'ext' => 'json',
     ];

@@ -134,7 +134,8 @@ class TaskService extends BaseService
         ini_set('memory_limit', '2048M');
 
         while (true) {
-            if (Carbon::now()->diffInSeconds($currentTime) > 1800 || $params['page'] > 10000) {
+            if (Carbon::now()->diffInSeconds($currentTime) > config('app.max_exec_time') ||
+                $params['page'] > config('app.max_exec_page')) {
                 $this->repository->update([
                     'row_num' => $total,
                     'fail_reason' => '系统执行超时或超过执行分页限制，请联系技术人员',
