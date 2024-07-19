@@ -62,7 +62,7 @@ class TaskService extends BaseService
         $uploadRes = (new Upload($this->filesystem))
             ->upload($file, sprintf('import/%s', $params['source']));
 
-        $this->repository->create([
+        $taskId = $this->repository->insertById([
             'member_id' => $params['member_id'] ?? request()->userId(),
             'type' => TypeEnum::IMPORT->value,
             'source' => $params['source'],
@@ -71,7 +71,7 @@ class TaskService extends BaseService
             'ext' => ['request_params' => $params['request_params'] ?? []]
         ]);
 
-        $this->addTaskQueue(['task_id' => $this->repository->getId()], $scheduledAt);
+        $this->addTaskQueue(['task_id' => $taskId], $scheduledAt);
     }
 
     public function importTemplate($params): StreamedResponse
@@ -90,7 +90,7 @@ class TaskService extends BaseService
 
     public function addTaskQueue($params, $scheduledAt = ''): void
     {
-        dispatch((new TaskJob($params))->onQueue(QueueEnum::TABLE_TASK_JOB->value))->delay($scheduledAt);
+        dispatch((new TaskJob($params))->onQueue(QueueEnum::SYSTEM_TASK_JOB->value))->delay($scheduledAt);
     }
 
     public function dealQueue($params): void

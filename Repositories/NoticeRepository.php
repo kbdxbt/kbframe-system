@@ -17,6 +17,8 @@ class NoticeRepository extends BaseRepository
         } elseif (!empty($params['created_at'])) {
             $query->whereBetween('created_at', $params['created_at']);
         }
+
+        $query->orderBy('sort', 'desc');
     }
 
     public function model(): string

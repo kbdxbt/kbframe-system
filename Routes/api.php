@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\System\Http\Controllers\MessageController;
 use Modules\System\Http\Controllers\NoticeController;
 use Modules\System\Http\Controllers\TaskController;
 use Modules\System\Http\Controllers\UploadController;
@@ -36,6 +37,17 @@ Route::prefix('v1')->middleware(['api'])->group(function () {
             ->middleware(['auth:member'])->group(function () {
                 Route::get('list', 'list')->name('list');
                 Route::post('save', 'save')->name('save');
+                Route::get('detail', 'detail')->name('detail');
+                Route::post('delete', 'delete')->name('delete');
+            });
+
+        // 消息模块
+        Route::prefix('message')
+            ->controller(MessageController::class)
+            ->name('message.')
+            ->middleware(['auth:member'])->group(function () {
+                Route::get('unread_list', 'unreadList')->name('unread');
+                Route::post('mark_read', 'markRead')->name('mark_read');
                 Route::get('detail', 'detail')->name('detail');
                 Route::post('delete', 'delete')->name('delete');
             });

@@ -8,6 +8,8 @@ class Upload extends BaseModel
 {
     use SoftDeletes;
 
+    public $operators = true;
+
     protected $casts = [
         'ext' => 'json',
     ];

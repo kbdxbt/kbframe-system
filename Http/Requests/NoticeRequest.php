@@ -10,12 +10,6 @@ use Modules\System\Models\Notice;
 
 class NoticeRequest extends BaseRequest
 {
-    public function listRules(): array
-    {
-        return [
-        ];
-    }
-
     public function saveRules(): array
     {
         return [

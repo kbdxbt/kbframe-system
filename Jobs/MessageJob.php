@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace Modules\System\Jobs;
 
 use Modules\Core\Jobs\BaseJob;
-use Modules\System\Services\TaskService;
+use Modules\System\Services\MessageService;
 
-class TaskJob extends BaseJob
+class MessageJob extends BaseJob
 {
-    /** 参数 */
-    protected $params;
+    protected $messageId;
 
     /**
      * @param $params
      * Create a new job instance.
      */
-    public function __construct($params)
+    public function __construct($messageId)
     {
-        $this->params = $params;
+        $this->messageId = $messageId;
     }
 
     /**
@@ -26,6 +25,6 @@ class TaskJob extends BaseJob
      */
     public function handle(): void
     {
-        app(TaskService::class)->dealQueue($this->params);
+        app(MessageService::class)->dealQueue($this->messageId);
     }
 }
