@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\System\Http\Controllers\HttpLogController;
 use Modules\System\Http\Controllers\MessageController;
 use Modules\System\Http\Controllers\NoticeController;
 use Modules\System\Http\Controllers\TaskController;
@@ -50,6 +51,14 @@ Route::prefix('v1')->middleware(['api'])->group(function () {
                 Route::post('mark_read', 'markRead')->name('mark_read');
                 Route::get('detail', 'detail')->name('detail');
                 Route::post('delete', 'delete')->name('delete');
+            });
+
+        // http日志模块
+        Route::prefix('http_log')
+            ->controller(HttpLogController::class)
+            ->name('http_log.')
+            ->middleware(['auth:member'])->group(function () {
+                Route::get('list', 'list')->name('list');
             });
     });
 

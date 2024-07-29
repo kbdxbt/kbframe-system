@@ -8,7 +8,7 @@ use Modules\System\Models\Message;
 
 class MessageRepository extends BaseRepository
 {
-    public function searchable(Builder $query, $params)
+    public function searchable(Builder $query, $params = [])
     {
         if (!empty($params['type'])) {
             $query->where('type', $params['type']);

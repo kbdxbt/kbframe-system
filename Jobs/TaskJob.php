@@ -13,7 +13,6 @@ class TaskJob extends BaseJob
     protected $params;
 
     /**
-     * @param $params
      * Create a new job instance.
      */
     public function __construct($params)

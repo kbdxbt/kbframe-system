@@ -12,7 +12,6 @@ class MessageJob extends BaseJob
     protected $messageId;
 
     /**
-     * @param $params
      * Create a new job instance.
      */
     public function __construct($messageId)

@@ -8,7 +8,7 @@ use Modules\System\Models\Notice;
 
 class NoticeRepository extends BaseRepository
 {
-    public function searchable(Builder $query, $params)
+    public function searchable(Builder $query, $params = [])
     {
         if (!empty($params['title'])) {
             $query->whereStartsWith('title', $params['title']);

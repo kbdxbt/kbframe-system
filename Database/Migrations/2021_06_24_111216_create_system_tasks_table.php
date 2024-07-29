@@ -6,15 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    protected $connection = 'system';
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('task', function (Blueprint $table) {
+        Schema::create('tasks', function (Blueprint $table) {
             $table->engine = 'Innodb';
             $table->comment('系统任务表');
-            $table->bigIncrements('id')->comment('主键');
+            $table->id()->comment('主键');
             $table->integer('member_id')->comment('会员ID');
             $table->tinyInteger('type')->comment('类型 [1:导出; 2:导入]');
             $table->string('source', 100)->default('')->comment('来源');
@@ -41,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('system_uploadfile');
+        Schema::dropIfExists('tasks');
     }
 };
