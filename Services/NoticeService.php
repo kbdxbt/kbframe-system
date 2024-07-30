@@ -9,7 +9,9 @@ use Modules\System\Repositories\NoticeRepository;
 
 class NoticeService extends BaseService
 {
-    use ActionServiceTrait;
+    use ActionServiceTrait {
+        ActionServiceTrait::saveData as parentSaveData;
+    }
 
     protected $repository;
 
@@ -20,9 +22,7 @@ class NoticeService extends BaseService
 
     public function saveData($params): void
     {
-        $this->repository->updateOrInsert([
-            'id' => $params['id'] ?? 0
-        ], Arr::only($params, [
+        $this->parentSaveData(Arr::only($params, [
             'category', 'tags', 'title', 'content', 'sort', 'start_date', 'end_date'
         ]));
     }

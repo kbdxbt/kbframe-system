@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\System\Http\Controllers\ConfigController;
 use Modules\System\Http\Controllers\HttpLogController;
 use Modules\System\Http\Controllers\MessageController;
 use Modules\System\Http\Controllers\NoticeController;
@@ -9,11 +10,12 @@ use Modules\System\Http\Controllers\UploadController;
 
 Route::prefix('v1')->middleware(['api'])->group(function () {
 
-    Route::group(['prefix' => 'system'], function () {
+    Route::group(['prefix' => 'system', 'middleware' => 'auth:member'], function () {
         // 上传模块
         Route::prefix('upload')
             ->controller(UploadController::class)
             ->name('upload.')
+            ->withoutMiddleware(['auth:member'])
             ->group(function () {
                 Route::post('image', 'uploadImage')->name('image');
                 Route::post('file', 'uploadFile')->name('uploadFile');
@@ -24,7 +26,7 @@ Route::prefix('v1')->middleware(['api'])->group(function () {
         Route::prefix('task')
             ->controller(TaskController::class)
             ->name('task.')
-            ->middleware(['auth:member'])->group(function () {
+            ->group(function () {
                 Route::get('export', 'export')->name('export');
                 Route::post('import', 'import')->name('import');
                 Route::get('import_template', 'importTemplate')->name('import_template');
@@ -35,7 +37,7 @@ Route::prefix('v1')->middleware(['api'])->group(function () {
         Route::prefix('notice')
             ->controller(NoticeController::class)
             ->name('notice.')
-            ->middleware(['auth:member'])->group(function () {
+            ->group(function () {
                 Route::get('list', 'list')->name('list');
                 Route::post('save', 'save')->name('save');
                 Route::get('detail', 'detail')->name('detail');
@@ -46,7 +48,7 @@ Route::prefix('v1')->middleware(['api'])->group(function () {
         Route::prefix('message')
             ->controller(MessageController::class)
             ->name('message.')
-            ->middleware(['auth:member'])->group(function () {
+            ->group(function () {
                 Route::get('unread_list', 'unreadList')->name('unread');
                 Route::post('mark_read', 'markRead')->name('mark_read');
                 Route::get('detail', 'detail')->name('detail');
@@ -59,6 +61,17 @@ Route::prefix('v1')->middleware(['api'])->group(function () {
             ->name('http_log.')
             ->middleware(['auth:member'])->group(function () {
                 Route::get('list', 'list')->name('list');
+            });
+
+        // 配置模块
+        Route::prefix('config')
+            ->controller(ConfigController::class)
+            ->name('config.')
+            ->middleware(['auth:member'])->group(function () {
+                Route::get('list', 'list')->name('list');
+                Route::post('save', 'save')->name('save');
+                Route::get('detail', 'detail')->name('detail');
+                Route::post('delete', 'delete')->name('delete');
             });
     });
 
