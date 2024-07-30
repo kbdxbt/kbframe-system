@@ -2,15 +2,15 @@
 
 namespace Modules\System\Services;
 
+use Modules\Core\Enums\StatusEnum;
 use Modules\Core\Services\BaseService;
 use Modules\Core\Support\Traits\ActionServiceTrait;
 use Modules\Core\Support\Traits\Cacheable;
-use Modules\System\Enums\ConfigGroupEnum;
 use Modules\System\Repositories\ConfigRepository;
 
 class ConfigService extends BaseService
 {
-    use ActionServiceTrait, Cacheable{
+    use ActionServiceTrait, Cacheable {
         ActionServiceTrait::saveData as parentSaveData;
     }
 
@@ -18,7 +18,7 @@ class ConfigService extends BaseService
 
     public function __construct(ConfigRepository $repository)
     {
-        $this->repository = $repository;
+        $this->repository  = $repository;
         $this->cachePrefix = 'system_config:';
     }
 
@@ -50,9 +50,11 @@ class ConfigService extends BaseService
     protected function formatList($data)
     {
         foreach ($data['data'] as &$v) {
-            $v['group_text'] = ConfigGroupEnum::fromValue($v['group']);
+            $v['status_text'] = StatusEnum::fromValue($v['status']);
         }
 
-        return $data;
+        $data['searchFields'] = $this->repository->searchFields();
+
+        return $this->formatListData($data);
     }
 }
