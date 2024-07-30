@@ -47,14 +47,12 @@ class ConfigService extends BaseService
         return $config;
     }
 
-    protected function formatList($data)
+    protected function formatList($data): array
     {
         foreach ($data['data'] as &$v) {
             $v['status_text'] = StatusEnum::fromValue($v['status']);
         }
-
-        $data['searchFields'] = $this->repository->searchFields();
-
-        return $this->formatListData($data);
+        
+        return $data;
     }
 }
