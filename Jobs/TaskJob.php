@@ -25,6 +25,6 @@ class TaskJob extends BaseJob
      */
     public function handle(): void
     {
-        app(TaskService::class)->dealQueue($this->params);
+        TaskService::instance()->dealQueue($this->params);
     }
 }

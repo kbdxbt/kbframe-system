@@ -27,7 +27,7 @@ class HttpLogService extends BaseService
     public function dealQueue($driver, $data): void
     {
         if ($driver === 'mysql') {
-            \Modules\System\Repositories\HttpLogRepository::make()->create($data);
+            HttpLogRepository::make()->create($data);
         } else {
             write_log('http_log', $data);
         }

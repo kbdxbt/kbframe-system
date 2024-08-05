@@ -48,10 +48,8 @@ class MessageService extends BaseService
         $message = Message::query()->withoutGlobalScopes()->where('message_id', $messageId)->first();
 
         if (empty($message)) {
-            throw new \Exception('获取系统消息记录异常');
+            app(AnonymousNotifiable::class)->notify(new MessageNotify($message));
         }
-
-        app(AnonymousNotifiable::class)->notify(new MessageNotify($message));
     }
 
     public function markRead($params): void

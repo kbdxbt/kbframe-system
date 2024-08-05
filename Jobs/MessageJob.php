@@ -24,6 +24,6 @@ class MessageJob extends BaseJob
      */
     public function handle(): void
     {
-        app(MessageService::class)->dealQueue($this->messageId);
+        MessageService::instance()->dealQueue($this->messageId);
     }
 }

@@ -5,20 +5,17 @@ declare(strict_types=1);
 namespace Modules\System\Jobs;
 
 use Modules\Core\Jobs\BaseJob;
-use Modules\System\Services\HttpLogService;
+use Modules\System\Services\ActionLogService;
 
-class HttpLogJob extends BaseJob
+class ActionLogJob extends BaseJob
 {
-    protected $driver;
-
     protected $data;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($driver, $data)
+    public function __construct($data)
     {
-        $this->driver = $driver;
         $this->data = $data;
     }
 
@@ -27,6 +24,6 @@ class HttpLogJob extends BaseJob
      */
     public function handle(): void
     {
-        HttpLogService::instance()->dealQueue($this->driver, $this->data);
+        ActionLogService::instance()->dealQueue($this->data);
     }
 }
