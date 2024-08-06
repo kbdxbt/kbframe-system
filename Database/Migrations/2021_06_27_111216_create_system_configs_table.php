@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('options')->nullable()->comment('配置额外值');
             $table->string('tip', 100)->nullable()->comment('配置说明');
             $table->boolean('sort')->default(0)->comment('排序');
-            $table->boolean('status')->default(0)->comment('状态');
+            $table->status()->comment(\Modules\Core\Enums\StatusEnum::allToDatabaseNote('状态'));
             $table->timestamps();
             $table->softDeletes();
 

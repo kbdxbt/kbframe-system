@@ -23,8 +23,7 @@ return new class extends Migration
             $table->string('subject', 32)->default('');
             $table->string('description', 500)->default('');
             $table->json('options')->nullable();
-            $table->string('created_by', 255)->default('');
-            $table->string('updated_by', 255)->default('');
+            $table->operators();
             $table->timestamps();
             $table->softDeletes();
 

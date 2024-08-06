@@ -32,7 +32,7 @@ return new class extends Migration
             $table->text('curl_text')->comment('curl文本')->nullable();
             $table->string('device', 50)->comment('设备')->nullable();
             $table->string('version', 20)->comment('app版本')->nullable();
-            $table->json('ext');
+            $table->extJson();
             $table->timestamps();
 
             $table->index('ip');

@@ -27,11 +27,9 @@ return new class extends Migration
             $table->bigInteger('size_byte')->nullable()->comment('字节数');
             $table->string('size_info', 50)->nullable()->comment('文件大小');
             $table->string('url', 255)->nullable()->comment('url地址');
-            $table->bigInteger('created_by')->nullable()->comment('创建者');
-            $table->bigInteger('updated_by')->nullable()->comment('更新者');
             $table->string('remark', 255)->nullable()->comment('备注');
-            $table->json('ext')->nullable()->comment('扩展信息');
-            $table->string('remark', 255)->nullable()->comment('备注');
+            $table->operators();
+            $table->extJson();
             $table->timestamps();
             $table->softDeletes();
 
